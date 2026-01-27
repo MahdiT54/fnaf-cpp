@@ -1,0 +1,20 @@
+# Build output
+/build/
+/out/
+CMakeCache.txt
+CMakeFiles/
+
+# Compiled files
+*.o
+*.obj
+*.exe
+*.app
+
+# IDE files
+.vscode/
+.vs/
+.idea/
+
+# OS junk
+.DS_Store
+Thumbs.db
