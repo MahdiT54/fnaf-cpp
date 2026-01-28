@@ -41,7 +41,6 @@ struct AnimatronicAI
     float aggro = 0.0f;
     float cooldown = 0.0f;
     float decisionAcc = 0.0f;
-    int position = 1;
 
     virtual ~AnimatronicAI() = default;
 
