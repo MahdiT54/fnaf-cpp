@@ -20,32 +20,28 @@ struct GameState // type definition
     bool rightDoor;
 };
 
+struct FreddoAI;
+struct ChicoAI;
+
 void handleInput(GameState &game, int key);
 void updateTime(GameState &game);   // <<<^ forward declarations so main() is aware
-void drawUI(const GameState &game); // consts promise not to change game
+void drawUI(const GameState &game, const FreddoAI &freddo, const ChicoAI &chico); // consts promise not to change game
 bool checkGameOver(GameState &game);
 
 // wer'e making  base AI struct (shared brain)
 struct AnimatronicAI
 {
-    enum State
-    {
-        Idle,
-        Approaching,
-        Lurking,
-        Aggressive
-    };
-
-    State state = Idle;
-
     float aggro = 0.0f;
     float cooldown = 0.0f;
     float decisionAcc = 0.0f;
+    float blockedTimer = 0.0f;
 
     virtual ~AnimatronicAI() = default;
 
     virtual bool isBlocked(const GameState &game) const = 0; // pure virtual
     virtual void advance(GameState &game) = 0;               //
+    virtual void retreat(GameState &game) = 0;
+    virtual bool atDoor(const GameState &game) const = 0;
 
     void update(GameState &game, float deltaSeconds)
     {
@@ -60,8 +56,28 @@ struct AnimatronicAI
             return;
         decisionAcc -= 1.0f;
 
-        if (isBlocked(game))
-            return; // derived class decides blocking
+        if (atDoor(game) && isBlocked(game))
+        {
+            blockedTimer += 1.0f;
+            float retreatThreshold = 5.0f - (aggro * 3.0f);
+
+
+            if (blockedTimer >= retreatThreshold)
+            {
+                retreat(game);
+                blockedTimer = 0.0f;
+                cooldown = 2.0f;
+                return;
+            }
+            return;
+        }
+        else
+        {
+            blockedTimer = 0.0f;
+        }
+
+        // if (isBlocked(game))
+        //     return; // derived class decides blocking
 
         if (cooldown > 0.0f)
             return;
@@ -86,88 +102,50 @@ struct FreddoAI : AnimatronicAI
 
     void advance(GameState &game) override
     {
-        if (game.freddoPos < 6)
+        if (game.freddoPos < 7)
             game.freddoPos++;
+    }
+
+    void retreat(GameState &game) override
+    {
+        if (game.freddoPos > 1)
+            game.freddoPos -= 2;
+        if (game.freddoPos < 1)
+            game.freddoPos = 1;
+    }
+
+    bool atDoor(const GameState &game) const override
+    {
+        return game.freddoPos == 6;
     }
 };
 
 struct ChicoAI : AnimatronicAI
 {
-    bool isBlocked(const GameState &game) const override 
+    bool isBlocked(const GameState &game) const override
     {
         return game.rightDoor;
     }
 
     void advance(GameState &game) override
     {
-        if (game.chicoPos < 7)
+        if (game.chicoPos < 8)
             game.chicoPos++;
     }
-};
 
-// struct FreddoAI
-//{
-//     enum State {
-//         Idle,
-//         Approaching,
-//         Lurking,
-//         Aggressive
-//     };
-//     State state = Idle;
-//
-//     float aggro = 0.0f;
-//     float cooldown = 0.0f;
-//     float decisionAcc = 0.0f;
-//
-//     void update(GameState& game, float deltaSeconds)
-//     {
-//         aggro += 0.02f * game.hoursSurvived * deltaSeconds;
-//         if (aggro > 1.0f) aggro = 1.0f;
-//
-//         if (cooldown > 0.0f)
-//         {
-//             cooldown -= deltaSeconds;
-//             if (cooldown < 0.0f) cooldown = 0.0f;
-//         }
-//
-//         decisionAcc += deltaSeconds;
-//         if (decisionAcc < 1.0f)
-//             return;
-//		decisionAcc -= 1.0f;
-//
-//             float baseChance = 0.25f + 0.5f * aggro;
-//
-//             if (game.leftDoor) baseChance *= 0.4f;
-//             if (game.rightDoor) baseChance *= 0.4f;
-//
-//             float batteryFactor = 1.0f + (100 - game.battery) / 200.0f;
-//             float moveChance = baseChance * batteryFactor;
-//
-//             if (cooldown > 0.0f)
-//                 return;
-//
-//             float r = std::rand() / (float)RAND_MAX;
-//             if (r < moveChance)
-//             {
-//                 if (game.freddoPos < 6)
-//                 {
-//					game.freddoPos++;
-//                     state = Approaching;
-//                     cooldown = 1.0f + (1.0f - aggro) * 2.0f;
-//                 }
-//                 else
-//                 {
-//                     state = Aggressive;
-//                     cooldown = 2.0f;
-//                 }
-//             }
-//             else
-//             {
-//                 if (state == Approaching && (std::rand() % 10) == 0 && game.freddoPos > 1)
-//                     game.freddoPos--;
-//             }
-//        }
-// };
+    void retreat(GameState &game) override
+    {
+        if (game.chicoPos > 1)
+            game.chicoPos -= 2;
+        if (game.chicoPos < 1)
+            game.chicoPos = 1;
+    }
+
+    bool atDoor(const GameState &game) const override
+    {
+        return game.chicoPos == 7;
+    }
+};
 
 int main()
 {
@@ -267,7 +245,7 @@ int main()
 
         if (shouldRedraw)
         {
-            drawUI(game);
+            drawUI(game, freddo, chico);
             shouldRedraw = false;
         }
 
@@ -313,10 +291,9 @@ void drawEnemy(char symbol, int room) // draw enemy at room position
     mvaddch(pos.row, pos.col, symbol);
 };
 
-void drawUI(const GameState &game)
+void drawUI(const GameState &game, const FreddoAI &freddo, const ChicoAI &chico)
 {
     clear();
-
     // display hour in 12-hour format
     int displayTime = (12 + game.hoursSurvived) % 12;
     if (displayTime == 0)
@@ -329,6 +306,7 @@ void drawUI(const GameState &game)
         seconds = 59;
 
     mvprintw(0, 0, "===== FIVE NIGHTS AT FREDDO'S (TEXT) =====");
+    mvprintw(1, 0, "=====   Developed by Mahdi Tanzim   =====");
     mvprintw(2, 0, "Time: %02d:%02d AM", displayTime, seconds);
 
     constexpr int BAR_WIDTH = 20;
@@ -383,8 +361,7 @@ void drawUI(const GameState &game)
              " |               | \n"
              " --[6]---|YOU|--[7]\n");
 
-    mvprintw(18, 0, "Controls: [A] Left | [D] Right | [Q] Quit");
-
+    mvprintw(19, 0, "Controls: [A] Left | [D] Right | [Q] Quit");
     attron(COLOR_PAIR(1));
     drawEnemy('F', game.freddoPos);
     attroff(COLOR_PAIR(1));
@@ -392,7 +369,12 @@ void drawUI(const GameState &game)
     attron(COLOR_PAIR(2));
     drawEnemy('C', game.chicoPos);
     attroff(COLOR_PAIR(2));
-
+    mvprintw(20, 0, "DEBUG Freddo: timer=%.1f aggro=%.2f atDoor=%s",
+             freddo.blockedTimer, freddo.aggro,
+             freddo.atDoor(game) ? "YES" : "NO");
+    mvprintw(21, 0, "DEBUG Chico: timer=%.1f aggro=%.2f atDoor=%s",
+             chico.blockedTimer, chico.aggro,
+             chico.atDoor(game) ? "YES" : "NO");
     refresh();
 }
 
@@ -434,7 +416,7 @@ bool checkGameOver(GameState &game)
         return true;
     }
 
-    if (game.freddoPos == 6 && !game.leftDoor)
+    if (game.freddoPos == 7 && !game.leftDoor)
     {
         clear();
         mvprintw(0, 0, "Freddo appears at the door. (GAME OVER)");
@@ -443,7 +425,7 @@ bool checkGameOver(GameState &game)
         return true;
     }
 
-    if (game.chicoPos == 7 && !game.rightDoor)
+    if (game.chicoPos == 8 && !game.rightDoor)
     {
         clear();
         mvprintw(0, 0, "Chico mogged you.  (GAME OVER)");
