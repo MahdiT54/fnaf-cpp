@@ -1,4 +1,4 @@
-#include <ncurses/curses.h>
+#include <curses.h>
 #include <cstdlib>
 #include <ctime>
 #include <chrono>
@@ -306,7 +306,7 @@ void drawUI(const GameState &game, const FreddoAI &freddo, const ChicoAI &chico)
         seconds = 59;
 
     mvprintw(0, 0, "===== FIVE NIGHTS AT FREDDO'S (TEXT) =====");
-    mvprintw(1, 0, "=====   Developed by Mahdi Tanzim   =====");
+    mvprintw(1, 0, "=====   Developed by Mahdi Tanzim    =====");
     mvprintw(2, 0, "Time: %02d:%02d AM", displayTime, seconds);
 
     constexpr int BAR_WIDTH = 20;
