@@ -18,3 +18,7 @@ CMakeFiles/
 # OS junk
 .DS_Store
 Thumbs.db
+
+# debuggeis
+main
+*.dSYM/
