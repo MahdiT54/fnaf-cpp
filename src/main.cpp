@@ -1,4 +1,4 @@
-#include <curses.h>
+#include <ncurses/curses.h>
 #include <cstdlib>
 #include <ctime>
 #include <chrono>
@@ -24,7 +24,7 @@ struct FreddoAI;
 struct ChicoAI;
 
 void handleInput(GameState &game, int key);
-void updateTime(GameState &game);   // <<<^ forward declarations so main() is aware
+void updateTime(GameState &game);                                                 // <<<^ forward declarations so main() is aware
 void drawUI(const GameState &game, const FreddoAI &freddo, const ChicoAI &chico); // consts promise not to change game
 bool checkGameOver(GameState &game);
 
@@ -43,9 +43,24 @@ struct AnimatronicAI
     virtual void retreat(GameState &game) = 0;
     virtual bool atDoor(const GameState &game) const = 0;
 
+    virtual float getAggroRate(const GameState &game) const
+    {
+        return 0.02f * game.hoursSurvived;
+    }
+
+    virtual float getRetreatThreshold() const
+    {
+        return 5.0f - (aggro * 3.0f);
+    }
+
+    virtual float getCooldownDuration() const 
+    {
+        return 1.0f + (1.0f - aggro) * 2.0f;
+    }
+
     void update(GameState &game, float deltaSeconds)
     {
-        aggro += 0.02f * game.hoursSurvived * deltaSeconds;
+        aggro += getAggroRate(game) * deltaSeconds;
         aggro = std::min(aggro, 1.0f);
 
         if (cooldown > 0.0f)
@@ -61,7 +76,6 @@ struct AnimatronicAI
             blockedTimer += 1.0f;
             float retreatThreshold = 5.0f - (aggro * 3.0f);
 
-
             if (blockedTimer >= retreatThreshold)
             {
                 retreat(game);
@@ -75,9 +89,6 @@ struct AnimatronicAI
         {
             blockedTimer = 0.0f;
         }
-
-        // if (isBlocked(game))
-        //     return; // derived class decides blocking
 
         if (cooldown > 0.0f)
             return;
@@ -362,19 +373,30 @@ void drawUI(const GameState &game, const FreddoAI &freddo, const ChicoAI &chico)
              " --[6]---|YOU|--[7]\n");
 
     mvprintw(19, 0, "Controls: [A] Left | [D] Right | [Q] Quit");
-    attron(COLOR_PAIR(1));
-    drawEnemy('F', game.freddoPos);
-    attroff(COLOR_PAIR(1));
+    if (game.freddoPos == game.chicoPos)
+    {
+        attron(COLOR_PAIR(1));
+        mvaddch(ROOM_POSITIONS[game.freddoPos].row,
+                ROOM_POSITIONS[game.freddoPos].col,
+                'X'); // or "FC" or "!!"
+        attroff(COLOR_PAIR(1));
+    }
+    else
+    {
+        attron(COLOR_PAIR(3));
+        drawEnemy('F', game.freddoPos);
+        attroff(COLOR_PAIR(3));
 
-    attron(COLOR_PAIR(2));
-    drawEnemy('C', game.chicoPos);
-    attroff(COLOR_PAIR(2));
-    mvprintw(20, 0, "DEBUG Freddo: timer=%.1f aggro=%.2f atDoor=%s",
-             freddo.blockedTimer, freddo.aggro,
-             freddo.atDoor(game) ? "YES" : "NO");
-    mvprintw(21, 0, "DEBUG Chico: timer=%.1f aggro=%.2f atDoor=%s",
-             chico.blockedTimer, chico.aggro,
-             chico.atDoor(game) ? "YES" : "NO");
+        attron(COLOR_PAIR(2));
+        drawEnemy('C', game.chicoPos);
+        attroff(COLOR_PAIR(2));
+    }
+    // mvprintw(20, 0, "DEBUG Freddo: timer=%.1f aggro=%.2f atDoor=%s",
+    //          freddo.blockedTimer, freddo.aggro,
+    //          freddo.atDoor(game) ? "YES" : "NO");
+    // mvprintw(21, 0, "DEBUG Chico: timer=%.1f aggro=%.2f atDoor=%s",
+    //          chico.blockedTimer, chico.aggro,
+    //          chico.atDoor(game) ? "YES" : "NO");
     refresh();
 }
 
