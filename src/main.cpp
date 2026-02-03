@@ -1,6 +1,6 @@
 #include <ncurses/curses.h>
 #include <cstdlib>
-#include <ctime>
+// #include <ctime>
 #include <chrono>
 #include <algorithm>
 #include <thread>
@@ -302,7 +302,7 @@ void drawEnemy(char symbol, int room) // draw enemy at room position
     mvaddch(pos.row, pos.col, symbol);
 };
 
-void drawUI(const GameState &game, const FreddoAI &freddo, const ChicoAI &chico)
+void drawUI(const GameState &game)
 {
     clear();
     // display hour in 12-hour format

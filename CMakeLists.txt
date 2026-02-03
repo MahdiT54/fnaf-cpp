@@ -9,7 +9,7 @@ find_package(Curses REQUIRED)
 
 # Define executable ONCE
 add_executable(console_fnaf
-    src/main.cpp
+    src/clone.cpp
 )
 
 # Platform-specific configuration
