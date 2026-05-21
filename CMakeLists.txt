@@ -9,7 +9,11 @@ find_package(Curses REQUIRED)
 
 # Define executable ONCE
 add_executable(console_fnaf
-    src/clone.cpp
+    src/main.cpp
+    src/game_state.cpp
+    src/ai.cpp
+    src/input.cpp
+    src/render.cpp
 )
 
 # Platform-specific configuration
@@ -19,8 +23,12 @@ if(APPLE OR UNIX)
     target_include_directories(console_fnaf PRIVATE ${CURSES_INCLUDE_DIRS})
 elseif(WIN32)
     # Windows/MSYS2: use ncursesw
+    set(NCURSES_ROOT "C:/msys64/ucrt64" CACHE PATH "MSYS2 UCRT64 installation root")
     target_include_directories(console_fnaf PRIVATE
-        C:/msys64/ucrt64/include
+        "${NCURSES_ROOT}/include"
+    )
+    target_link_directories(console_fnaf PRIVATE
+        "${NCURSES_ROOT}/lib"
     )
     target_link_libraries(console_fnaf PRIVATE
         ncursesw
