@@ -1,0 +1,26 @@
+Survive2Sunrise - How to play (Windows)
+========================================
+
+1. Extract this entire folder if you downloaded a zip file.
+2. Double-click PLAY.bat (not console_fnaf.exe directly).
+3. A black game window will open. Keep that window focused.
+
+Controls
+--------
+  A  -  Toggle left door
+  D  -  Toggle right door
+  Q  -  Quit
+
+Goal
+----
+Survive until sunrise without running out of battery or letting an animatronic in.
+
+Troubleshooting
+---------------
+- If Windows SmartScreen warns about an unknown app, choose "More info" then "Run anyway"
+  (the game is not code-signed).
+- Always start the game with PLAY.bat so the terminal libraries load correctly.
+- If the window closes immediately, make sure all files stayed in the same folder after extract.
+
+Source code and build instructions:
+https://github.com/MahdiT54/fnaf-cpp
