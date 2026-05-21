@@ -11,52 +11,101 @@ struct ScreenPos
     int col;
 };
 
-constexpr ScreenPos ROOM_POSITIONS[] = {
-    {0, 0},   // unused (index 0)
-    {9, 11},  // [1]
-    {11, 1},  // [2]
-    {11, 17}, // [3]
-    {14, 1},  // [4]
-    {14, 23}, // [5]
-    {17, 4},  // [6] left door
-    {17, 17}  // [7] right door
+constexpr int MAP_START_ROW = 9;
+constexpr int MAP_WIDTH = 28;
+constexpr const char *TITLE_LINE = "=====        SURVIVE2SUNRISE        =====";
+constexpr int TITLE_WIDTH = 42;
+
+// Positions relative to the map's top-left corner (map drawn at mapCol, MAP_START_ROW).
+constexpr ScreenPos ROOM_OFFSETS[] = {
+    {0, 0},  // unused (index 0)
+    {0, 11}, // [1]
+    {2, 1},  // [2]
+    {2, 17}, // [3]
+    {5, 1},  // [4]
+    {5, 23}, // [5]
+    {8, 4},  // [6]
+    {8, 17}, // [7]
 };
+
+constexpr int LEFT_DOOR_COL = 3;
+constexpr int RIGHT_DOOR_COL = 16;
+
+constexpr const char *MAP_LINES[] = {
+    "          [1]      ",
+    "           |       ",
+    "[2]-------------[3]",
+    " |               | ",
+    " |               | ",
+    "[4]--------------+----[5]",
+    " |               | ",
+    " |               | ",
+    " --[6]---|YOU|--[7]",
+};
+constexpr int MAP_HEIGHT = 9;
+
+int mapStartCol()
+{
+    int col = (TITLE_WIDTH - MAP_WIDTH) / 2;
+    return col < 0 ? 0 : col;
+}
 
 void initTerminalColors()
 {
     if (has_colors())
     {
         start_color();
-        init_pair(1, COLOR_RED, COLOR_BLACK);    // Low battery
-        init_pair(2, COLOR_YELLOW, COLOR_BLACK); // Medium battery
-        init_pair(3, COLOR_GREEN, COLOR_BLACK);  // High battery
+        init_pair(1, COLOR_RED, COLOR_BLACK);     // Low battery
+        init_pair(2, COLOR_YELLOW, COLOR_BLACK);  // Medium battery
+        init_pair(3, COLOR_GREEN, COLOR_BLACK);   // High battery
+        init_pair(4, COLOR_RED, COLOR_BLACK);     // Freddo on map
+        init_pair(5, COLOR_CYAN, COLOR_BLACK);    // Chico on map
+        init_pair(6, COLOR_YELLOW, COLOR_BLACK);  // Closed door indicator
     }
 }
 
-void drawEnemy(char symbol, int room)
+void drawEnemy(char symbol, int room, int mapCol)
 {
     if (room <= 0 || room >= 8)
         return;
 
-    const ScreenPos &pos = ROOM_POSITIONS[room];
-    mvaddch(pos.row, pos.col, symbol);
+    const ScreenPos &pos = ROOM_OFFSETS[room];
+    mvaddch(MAP_START_ROW + pos.row, mapCol + pos.col, symbol);
+}
+
+void drawDoorOnMap(int mapCol, int doorCol, char label, bool closed)
+{
+    int row = MAP_START_ROW + ROOM_OFFSETS[6].row;
+
+    if (closed && has_colors())
+        attron(COLOR_PAIR(6) | A_BOLD);
+
+    mvaddch(row, mapCol + doorCol, '[');
+    mvaddch(row, mapCol + doorCol + 1, closed ? '#' : label);
+    mvaddch(row, mapCol + doorCol + 2, ']');
+
+    if (closed && has_colors())
+        attroff(COLOR_PAIR(6) | A_BOLD);
+}
+
+void drawMap(int mapCol)
+{
+    for (int i = 0; i < MAP_HEIGHT; ++i)
+        mvprintw(MAP_START_ROW + i, mapCol, MAP_LINES[i]);
 }
 
 void drawUI(const GameState &game)
 {
     clear();
-    // display hour in 12-hour format
     int displayTime = (12 + game.hoursSurvived) % 12;
     if (displayTime == 0)
         displayTime = 12;
 
-    // display seconds
     int seconds = static_cast<int>(game.hourProgress * 60.0f);
-
     if (seconds >= 60)
         seconds = 59;
 
-    mvprintw(0, 0, "===== FIVE NIGHTS AT FREDDO'S (TEXT) =====");
+    mvprintw(0, 0, "%s", TITLE_LINE);
     mvprintw(1, 0, "=====   Developed by Mahdi Tanzim    =====");
     mvprintw(2, 0, "Time: %02d:%02d AM", displayTime, seconds);
 
@@ -98,35 +147,35 @@ void drawUI(const GameState &game)
 
     mvprintw(4, 0, "Left Door: %s", game.leftDoor ? "CLOSED" : "OPEN");
     mvprintw(5, 0, "Right Door: %s", game.rightDoor ? "CLOSED" : "OPEN");
-    mvprintw(9, 0,
-             "          [1]      \n"
-             "           |       \n"
-             "[2]-------------[3]\n"
-             " |               | \n"
-             " |               | \n"
-             "[4]--------------+----[5]\n"
-             " |               | \n"
-             " |               | \n"
-             " --[6]---|YOU|--[7]\n");
+
+    const int mapCol = mapStartCol();
+    drawMap(mapCol);
+
+    drawDoorOnMap(mapCol, LEFT_DOOR_COL, '6', game.leftDoor);
+    drawDoorOnMap(mapCol, RIGHT_DOOR_COL, '7', game.rightDoor);
 
     mvprintw(19, 0, "Controls: [A] Left | [D] Right | [Q] Quit");
+
     if (game.freddoPos == game.chicoPos)
     {
+        const ScreenPos &pos = ROOM_OFFSETS[game.freddoPos];
         attron(COLOR_PAIR(1));
-        mvaddch(ROOM_POSITIONS[game.freddoPos].row,
-                ROOM_POSITIONS[game.freddoPos].col,
-                'X');
+        mvaddch(MAP_START_ROW + pos.row, mapCol + pos.col, 'X');
         attroff(COLOR_PAIR(1));
     }
     else
     {
-        attron(COLOR_PAIR(3));
-        drawEnemy('F', game.freddoPos);
-        attroff(COLOR_PAIR(3));
+        if (useColor)
+            attron(COLOR_PAIR(4));
+        drawEnemy('F', game.freddoPos, mapCol);
+        if (useColor)
+            attroff(COLOR_PAIR(4));
 
-        attron(COLOR_PAIR(2));
-        drawEnemy('C', game.chicoPos);
-        attroff(COLOR_PAIR(2));
+        if (useColor)
+            attron(COLOR_PAIR(5));
+        drawEnemy('C', game.chicoPos, mapCol);
+        if (useColor)
+            attroff(COLOR_PAIR(5));
     }
     refresh();
 }
