@@ -2,7 +2,9 @@
 
 A C++17 terminal survival game built with ncurses.
 
-Survive until sunrise while managing limited battery power. Freddo approaches from the left, Chico from the right - close the correct doors to block them, but every closed door drains extra battery.
+Survive until sunrise while managing limited battery power. Freddo approaches from the left, Chico from the right — close the correct doors to block them, but every closed door drains extra battery.
+
+**Freddo & Chico** — They used to headline the pizzeria stage (Freddo on vocals, Chico on side acts). After closing they still roam: Freddo through the western halls toward your left door, Chico around the east and kitchens toward your right. Hold the matching door long enough and they retreat, but closed doors cost extra battery — and they get bolder as the night goes on.
 
 ## Play (Windows)
 
