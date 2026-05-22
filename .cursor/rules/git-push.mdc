@@ -1,0 +1,56 @@
+---
+description: Git push protocol — when and how agents may push to GitHub
+alwaysApply: true
+---
+
+# Git Push Protocol
+
+## When to push
+
+- **Never push unless the user explicitly asks** (e.g. "push this", "push to GitHub").
+- Do not push as a follow-up to committing unless the user requested both.
+
+## Before pushing
+
+Run these in parallel first:
+
+1. `git status` — confirm what will be included
+2. `git diff` — review staged and unstaged changes
+3. `git branch -vv` — confirm current branch and upstream
+4. `git remote -v` — confirm target remote
+
+If there are uncommitted changes, **commit first** (follow existing commit rules), then push.
+
+## Branch and remote rules
+
+- **Default branch is `main`.** Only push to `main` when the user asks for a direct push.
+- For non-trivial or reviewable work, prefer a feature branch and open a PR instead of pushing straight to `main`.
+- **Never force-push to `main` or `master`.** Warn the user if they request it.
+- Never run destructive git commands (`reset --hard`, `push --force`, etc.) unless the user explicitly requests them.
+
+## What not to push
+
+- Do not commit or push build artifacts (`build/`, `dist/`, `*.exe`, `*.obj`, etc.) — see `.gitignore`.
+- Do not commit secrets (`.env`, credentials, API keys).
+
+## Push workflow
+
+When the user asks to push:
+
+1. Review changes (`status`, `diff`, `log`)
+2. Stage and commit relevant files with a concise message focused on **why**
+3. Push: `git push -u origin <branch>` (use `-u` if upstream is not set)
+4. Run `git status` after push to verify success
+5. Report the commit hash, branch, and remote URL to the user
+
+## Example
+
+User: "push this"
+
+```
+git status && git diff && git log -3 --oneline
+git add <relevant files>
+git commit -m "feat: color CLOSED door status to match map indicators"
+git push -u origin main
+git status
+```
