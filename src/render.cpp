@@ -12,7 +12,7 @@ struct ScreenPos
     int col;
 };
 
-constexpr int MAP_START_ROW = 9;
+constexpr int MAP_START_ROW = 10;
 constexpr int MAP_WIDTH = 28;
 constexpr const char *TITLE_LINE = "=====         SURVIVE2SUNRISE        =====";
 constexpr int TITLE_WIDTH = 42;
@@ -123,7 +123,7 @@ void drawUI(const GameState &game)
 
     mvprintw(0, 0, "%s", TITLE_LINE);
     mvprintw(1, 0, "=====   Developed by Mahdi Tanzim    =====");
-    mvprintw(2, 0, "Time: %02d:%02d AM", displayTime, seconds);
+    mvprintw(3, 0, "Time: %02d:%02d AM", displayTime, seconds);
 
     constexpr int BAR_WIDTH = 20;
     int battery = game.battery;
@@ -133,7 +133,7 @@ void drawUI(const GameState &game)
         battery = 100;
     int filled = (battery * BAR_WIDTH) / 100;
 
-    int row = 3, col = 0;
+    int row = 4, col = 0;
     mvprintw(row, col, "Battery: ");
     int barCol = col + 9;
     mvaddch(row, barCol++, '[');
@@ -161,8 +161,8 @@ void drawUI(const GameState &game)
     mvaddch(row, barCol++, ']');
     mvprintw(row, barCol + 1, " %3d%%", battery);
 
-    drawDoorStatus(4, "Left Door", game.leftDoor);
-    drawDoorStatus(5, "Right Door", game.rightDoor);
+    drawDoorStatus(5, "Left Door", game.leftDoor);
+    drawDoorStatus(6, "Right Door", game.rightDoor);
 
     const int mapCol = mapStartCol();
     drawMap(mapCol);
@@ -170,7 +170,7 @@ void drawUI(const GameState &game)
     drawDoorOnMap(mapCol, LEFT_DOOR_COL, '6', game.leftDoor);
     drawDoorOnMap(mapCol, RIGHT_DOOR_COL, '7', game.rightDoor);
 
-    mvprintw(19, 0, "Controls: [A] Left | [D] Right | [Q] Quit");
+    mvprintw(20, 0, "Controls: [A] Left | [D] Right | [Q] Quit");
 
     if (game.freddoPos == game.chicoPos)
     {
