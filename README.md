@@ -1,3 +1,6 @@
+
+https://github.com/user-attachments/assets/5d782dc5-a844-415d-862d-262339d6e550
+
 # Survive2Sunrise
 
 A C++17 terminal survival game built with ncurses.
