@@ -11,6 +11,14 @@ Controls
   D  -  Toggle right door
   Q  -  Quit
 
+The animatronics
+-----------------
+Freddo and Chico used to headline the pizzeria stage—Freddo on vocals, Chico on
+the side acts. After hours they still roam the building. Freddo works the western
+halls toward your left door; Chico circles the east and kitchens toward your right.
+Hold the matching door shut long enough and they'll back off, but every closed door
+drains your battery faster. As the night wears on, they grow bolder.
+
 Goal
 ----
 Survive until sunrise without running out of battery or letting an animatronic in.

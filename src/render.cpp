@@ -164,6 +164,9 @@ void drawUI(const GameState &game)
     drawDoorStatus(5, "Left Door", game.leftDoor);
     drawDoorStatus(6, "Right Door", game.rightDoor);
 
+    mvprintw(7, 0, "Freddo (F) - Stalks the west wing.");
+    mvprintw(8, 0, "Chico (C) - Closes in from the east.");
+
     const int mapCol = mapStartCol();
     drawMap(mapCol);
 
@@ -219,7 +222,7 @@ bool checkGameOver(GameState &game)
     if (game.chicoPos == 8 && !game.rightDoor)
     {
         clear();
-        mvprintw(0, 0, "Chico mogged you.  (GAME OVER)");
+        mvprintw(0, 0, "Chico found you. (GAME OVER)");
         refresh();
         std::this_thread::sleep_for(std::chrono::seconds(3));
         return true;
