@@ -3,6 +3,7 @@
 #include <ncurses/curses.h>
 
 #include <chrono>
+#include <cstring>
 #include <thread>
 
 struct ScreenPos
@@ -13,7 +14,7 @@ struct ScreenPos
 
 constexpr int MAP_START_ROW = 9;
 constexpr int MAP_WIDTH = 28;
-constexpr const char *TITLE_LINE = "=====        SURVIVE2SUNRISE        =====";
+constexpr const char *TITLE_LINE = "=====         SURVIVE2SUNRISE        =====";
 constexpr int TITLE_WIDTH = 42;
 
 // Positions relative to the map's top-left corner (map drawn at mapCol, MAP_START_ROW).
@@ -88,6 +89,21 @@ void drawDoorOnMap(int mapCol, int doorCol, char label, bool closed)
         attroff(COLOR_PAIR(6) | A_BOLD);
 }
 
+void drawDoorStatus(int row, const char *label, bool closed)
+{
+    mvprintw(row, 0, "%s: ", label);
+    const int statusCol = static_cast<int>(std::strlen(label)) + 2;
+    const char *status = closed ? "CLOSED" : "OPEN";
+
+    if (closed && has_colors())
+        attron(COLOR_PAIR(6) | A_BOLD);
+
+    mvprintw(row, statusCol, "%s", status);
+
+    if (closed && has_colors())
+        attroff(COLOR_PAIR(6) | A_BOLD);
+}
+
 void drawMap(int mapCol)
 {
     for (int i = 0; i < MAP_HEIGHT; ++i)
@@ -145,8 +161,8 @@ void drawUI(const GameState &game)
     mvaddch(row, barCol++, ']');
     mvprintw(row, barCol + 1, " %3d%%", battery);
 
-    mvprintw(4, 0, "Left Door: %s", game.leftDoor ? "CLOSED" : "OPEN");
-    mvprintw(5, 0, "Right Door: %s", game.rightDoor ? "CLOSED" : "OPEN");
+    drawDoorStatus(4, "Left Door", game.leftDoor);
+    drawDoorStatus(5, "Right Door", game.rightDoor);
 
     const int mapCol = mapStartCol();
     drawMap(mapCol);
