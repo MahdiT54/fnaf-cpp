@@ -1,0 +1,39 @@
+Survive2Sunrise - How to play (macOS)
+=====================================
+
+1. Download console-fnaf-macos.zip from the project's GitHub Releases page.
+2. Double-click the zip to extract the folder.
+3. Open the extracted folder and double-click Play.command (not console_fnaf directly).
+4. If macOS says the file cannot be opened because it is from an unidentified developer:
+   - Right-click Play.command, choose Open, then click Open in the dialog.
+   - You only need to do this once.
+5. Terminal will open with the game. Click the game window and keep it focused.
+
+Controls
+--------
+  A  -  Toggle left door
+  D  -  Toggle right door
+  Q  -  Quit
+
+The animatronics
+----------------
+Freddo and Chico used to headline the pizzeria stage—Freddo on vocals, Chico on
+the side acts. After hours they still roam the building. Freddo works the western
+halls toward your left door; Chico circles the east and kitchens toward your right.
+Hold the matching door shut long enough and they'll back off, but every closed door
+drains your battery faster. As the night wears on, they grow bolder.
+
+Goal
+----
+Survive until sunrise without running out of battery or letting an animatronic in.
+
+Troubleshooting
+---------------
+- Always start the game with Play.command so it runs from the correct folder.
+- If nothing happens when you double-click, right-click Play.command → Open.
+- If the window closes immediately, make sure every file stayed together after you
+  extracted the zip (do not move only the game binary out of the folder).
+- The game needs Terminal (or iTerm). It does not run inside a web browser.
+
+Source code and other platforms:
+https://github.com/MahdiT54/fnaf-cpp

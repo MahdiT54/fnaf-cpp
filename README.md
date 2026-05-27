@@ -9,11 +9,20 @@ Survive until sunrise while managing limited battery power. Freddo approaches fr
 
 **Freddo & Chico** — They used to headline the pizzeria stage (Freddo on vocals, Chico on side acts). After closing they still roam: Freddo through the western halls toward your left door, Chico around the east and kitchens toward your right. Hold the matching door long enough and they retreat, but closed doors cost extra battery — and they get bolder as the night goes on.
 
-## Play (Windows)
+## Play (no coding required)
 
-Download **`console-fnaf-windows.zip`** from [GitHub Releases](https://github.com/MahdiT54/fnaf-cpp/releases), extract the folder, and run **`PLAY.bat`**.
+Download a zip from [GitHub Releases](https://github.com/MahdiT54/fnaf-cpp/releases), extract the folder, and use the launcher inside:
 
-See `HOW_TO_PLAY.txt` in the release for controls.
+| Platform | Download | How to start |
+|----------|----------|--------------|
+| **Windows** | `console-fnaf-windows.zip` | Double-click **`PLAY.bat`** |
+| **macOS** | `console-fnaf-macos.zip` | Double-click **`Play.command`** |
+
+See `HOW_TO_PLAY.txt` (Windows) or `HOW_TO_PLAY_mac.txt` (macOS) inside the zip for controls and troubleshooting.
+
+**macOS first launch:** if macOS blocks the launcher, right-click **`Play.command`** → **Open** → **Open** once.
+
+The macOS zip is built on a Mac with `scripts/package-macos.sh` before upload (same idea as the Windows packager).
 
 ## Controls
 
@@ -57,4 +66,5 @@ cmake --build build
 - `src/input.*` - keyboard handling
 - `src/render.*` - terminal UI
 - `scripts/package-windows.ps1` - Windows release packaging
-- `release/` - launcher and player instructions for the Windows zip
+- `scripts/package-macos.sh` - macOS release packaging (run on a Mac)
+- `release/` - launchers (`PLAY.bat`, `Play.command`) and player instructions

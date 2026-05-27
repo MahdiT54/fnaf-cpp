@@ -30,5 +30,8 @@ Troubleshooting
 - Always start the game with PLAY.bat so the terminal libraries load correctly.
 - If the window closes immediately, make sure all files stayed in the same folder after extract.
 
+On a Mac? Download console-fnaf-macos.zip instead and double-click Play.command.
+See HOW_TO_PLAY_mac.txt in that zip.
+
 Source code and build instructions:
 https://github.com/MahdiT54/fnaf-cpp
