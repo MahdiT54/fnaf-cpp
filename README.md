@@ -3,6 +3,11 @@ https://github.com/user-attachments/assets/5d782dc5-a844-415d-862d-262339d6e550
 
 # Survive2Sunrise
 
+<p align="center">
+  <a href="https://licwebsolutions.com"><strong>LIC Web Solutions</strong></a><br>
+  <sub>Web design &amp; development · Long Island City, NY</sub>
+</p>
+
 A C++17 terminal survival game built with ncurses.
 
 > **Disclaimer:** This is an independent fan project inspired by the survival-horror genre and *Five Nights at Freddy's* mechanics. It is not affiliated with, endorsed by, or connected to *Five Nights at Freddy's* or its rights holders.
@@ -78,3 +83,11 @@ Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to for
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
+---
+
+<p align="center">
+  <a href="https://licwebsolutions.com"><strong>L I C</strong></a><br>
+  <strong><a href="https://licwebsolutions.com">Web Solutions</a></strong><br>
+  <sub><a href="https://licwebsolutions.com">licwebsolutions.com</a> · <a href="https://github.com/LIC-Web-Solutions">GitHub</a> · hello@licwebsolutions.com</sub>
+</p>
