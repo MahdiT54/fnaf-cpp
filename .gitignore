@@ -15,6 +15,7 @@ CMakeFiles/
 .vscode/
 .vs/
 .idea/
+.cursor/
 
 # OS junk
 .DS_Store

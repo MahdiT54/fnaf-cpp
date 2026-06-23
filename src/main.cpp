@@ -44,7 +44,8 @@ int main()
     auto lastTick = clock::now();
     constexpr auto frameDuration{std::chrono::milliseconds(16)}; // ~60 FPS
     auto nextTick = lastTick + frameDuration;
-
+    
+// the GAME LOOP //
     while (game.running)
     {
         auto now = clock::now();
