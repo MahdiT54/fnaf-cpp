@@ -61,6 +61,12 @@ Copy-Item $TerminfoSrc $TerminfoDst -Recurse
 Copy-Item (Join-Path $Root "release\PLAY.bat") $PackageDir
 Copy-Item (Join-Path $Root "release\HOW_TO_PLAY.txt") $PackageDir
 
+$AssetsSrc = Join-Path $Root "assets"
+if (-not (Test-Path $AssetsSrc)) {
+    Write-Error "Missing assets folder: $AssetsSrc"
+}
+Copy-Item $AssetsSrc (Join-Path $PackageDir "assets") -Recurse
+
 Write-Host "==> Creating zip..."
 if (Test-Path $ZipPath) { Remove-Item $ZipPath -Force }
 New-Item -ItemType Directory -Path $DistDir -Force | Out-Null

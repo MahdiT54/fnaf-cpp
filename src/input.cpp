@@ -1,3 +1,4 @@
+#include "audio.hpp"
 #include "input.hpp"
 
 void handleInput(GameState &game, int key)
@@ -6,11 +7,15 @@ void handleInput(GameState &game, int key)
     {
     case 'a':
     case 'A':
+        if (!game.leftDoor)
+            playDoorSound();
         game.leftDoor = !game.leftDoor;
         break;
 
     case 'd':
     case 'D':
+        if (!game.rightDoor)
+            playDoorSound();
         game.rightDoor = !game.rightDoor;
         break;
 

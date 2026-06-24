@@ -1,9 +1,8 @@
 #include "render.hpp"
 
-#include <ncurses/curses.h>
-
 #include <chrono>
 #include <cstring>
+#include <ncurses/curses.h>
 #include <thread>
 
 struct ScreenPos
@@ -33,15 +32,9 @@ constexpr int LEFT_DOOR_COL = 3;
 constexpr int RIGHT_DOOR_COL = 16;
 
 constexpr const char *MAP_LINES[] = {
-    "          [1]      ",
-    "           |       ",
-    "[2]-------------[3]",
-    " |               | ",
-    " |               | ",
-    "[4]--------------+----[5]",
-    " |               | ",
-    " |               | ",
-    " --[6]---|YOU|--[7]",
+    "          [1]      ", "           |       ", "[2]-------------[3]",
+    " |               | ", " |               | ", "[4]--------------+----[5]",
+    " |               | ", " |               | ", " --[6]---|YOU|--[7]",
 };
 constexpr int MAP_HEIGHT = 9;
 
@@ -56,12 +49,12 @@ void initTerminalColors()
     if (has_colors())
     {
         start_color();
-        init_pair(1, COLOR_RED, COLOR_BLACK);     // Low battery
-        init_pair(2, COLOR_YELLOW, COLOR_BLACK);  // Medium battery
-        init_pair(3, COLOR_GREEN, COLOR_BLACK);   // High battery
-        init_pair(4, COLOR_RED, COLOR_BLACK);     // Freddo on map
-        init_pair(5, COLOR_CYAN, COLOR_BLACK);    // Chico on map
-        init_pair(6, COLOR_YELLOW, COLOR_BLACK);  // Closed door indicator
+        init_pair(1, COLOR_RED, COLOR_BLACK);    // Low battery
+        init_pair(2, COLOR_YELLOW, COLOR_BLACK); // Medium battery
+        init_pair(3, COLOR_GREEN, COLOR_BLACK);  // High battery
+        init_pair(4, COLOR_RED, COLOR_BLACK);    // Freddo on map
+        init_pair(5, COLOR_CYAN, COLOR_BLACK);   // Chico on map
+        init_pair(6, COLOR_YELLOW, COLOR_BLACK); // Closed door indicator
     }
 }
 

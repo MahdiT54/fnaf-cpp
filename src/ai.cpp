@@ -8,15 +8,9 @@ float AnimatronicAI::getAggroRate(const GameState &game) const
     return 0.02f * game.hoursSurvived;
 }
 
-float AnimatronicAI::getRetreatThreshold() const
-{
-    return 5.0f - (aggro * 3.0f);
-}
+float AnimatronicAI::getRetreatThreshold() const { return 5.0f - (aggro * 3.0f); }
 
-float AnimatronicAI::getCooldownDuration() const
-{
-    return 1.0f + (1.0f - aggro) * 2.0f;
-}
+float AnimatronicAI::getCooldownDuration() const { return 1.0f + (1.0f - aggro) * 2.0f; }
 
 void AnimatronicAI::update(GameState &game, float deltaSeconds)
 {
@@ -62,10 +56,7 @@ void AnimatronicAI::update(GameState &game, float deltaSeconds)
     }
 }
 
-bool FreddoAI::isBlocked(const GameState &game) const
-{
-    return game.leftDoor;
-}
+bool FreddoAI::isBlocked(const GameState &game) const { return game.leftDoor; }
 
 void FreddoAI::advance(GameState &game)
 {
@@ -81,15 +72,9 @@ void FreddoAI::retreat(GameState &game)
         game.freddoPos = 1;
 }
 
-bool FreddoAI::atDoor(const GameState &game) const
-{
-    return game.freddoPos == 6;
-}
+bool FreddoAI::atDoor(const GameState &game) const { return game.freddoPos == 6; }
 
-bool ChicoAI::isBlocked(const GameState &game) const
-{
-    return game.rightDoor;
-}
+bool ChicoAI::isBlocked(const GameState &game) const { return game.rightDoor; }
 
 void ChicoAI::advance(GameState &game)
 {
@@ -105,7 +90,4 @@ void ChicoAI::retreat(GameState &game)
         game.chicoPos = 1;
 }
 
-bool ChicoAI::atDoor(const GameState &game) const
-{
-    return game.chicoPos == 7;
-}
+bool ChicoAI::atDoor(const GameState &game) const { return game.chicoPos == 7; }

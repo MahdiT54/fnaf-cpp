@@ -70,6 +70,12 @@ cp "$ROOT/release/Play.command" "$PACKAGE_DIR/"
 chmod +x "$PACKAGE_DIR/Play.command"
 cp "$ROOT/release/HOW_TO_PLAY_mac.txt" "$PACKAGE_DIR/"
 
+if [[ ! -d "$ROOT/assets" ]]; then
+  echo "Missing assets folder: $ROOT/assets" >&2
+  exit 1
+fi
+cp -R "$ROOT/assets" "$PACKAGE_DIR/assets"
+
 echo "==> Creating zip..."
 mkdir -p "$DIST_DIR"
 rm -f "$ZIP_PATH"

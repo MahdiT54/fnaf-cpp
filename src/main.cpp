@@ -1,17 +1,18 @@
 #include "ai.hpp"
+#include "audio.hpp"
 #include "game_state.hpp"
 #include "input.hpp"
 #include "render.hpp"
 
-#include <ncurses/curses.h>
-
 #include <chrono>
 #include <cstdlib>
 #include <ctime>
+#include <ncurses/curses.h>
 #include <thread>
 
 int main()
 {
+    initAudio();
     initscr();
     cbreak();
     noecho();
@@ -44,8 +45,8 @@ int main()
     auto lastTick = clock::now();
     constexpr auto frameDuration{std::chrono::milliseconds(16)}; // ~60 FPS
     auto nextTick = lastTick + frameDuration;
-    
-// the GAME LOOP //
+
+    // the GAME LOOP //
     while (game.running)
     {
         auto now = clock::now();
@@ -117,5 +118,6 @@ int main()
     }
 
     endwin();
+    shutdownAudio();
     return 0;
 }

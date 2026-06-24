@@ -14,6 +14,13 @@ add_executable(console_fnaf
     src/ai.cpp
     src/input.cpp
     src/render.cpp
+    src/audio.cpp
+)
+
+add_custom_command(TARGET console_fnaf POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/assets"
+        "$<TARGET_FILE_DIR:console_fnaf>/assets"
 )
 
 # Platform-specific configuration
@@ -32,5 +39,8 @@ elseif(WIN32)
     )
     target_link_libraries(console_fnaf PRIVATE
         ncursesw
+        winmm
+        ole32
+        avrt
     )
 endif()
